@@ -1,0 +1,57 @@
+I" &<p>In the previous post, Part 1, we covered creating a virtual machine using an ARM template and storing the admin password in an Azure Key Vault.  Once I got this working, I thought that it would be cool if I could put the files in to version control and run them from there.  I already have a GitHub account that I have played with in the past so I downloaded and installed Git.</p>
+
+<p>I opened Powershell and installed Chocolatey by getting the install command from their website at chocolatey.org.  Chocolatey is great because it works like Aptitude on Linux where you can install, upgrade, update and remove applications from the command line.  Once you install Chocolatey you will need to close Powershell and re-open it so that it can reload the environmental variables and the path will work.  Once you do this run the following command.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">choco</span><span class="w"> </span><span class="nx">install</span><span class="w"> </span><span class="nx">git</span><span class="w"> </span><span class="nt">--params</span><span class="w"> </span><span class="s2">"/GitAndUnixToolsOnPath /NoGitLfs /NoAutoCrlf"</span><span class="w"> </span></code></pre></figure>
+
+<p>This will install Git.  Again you will need to close and reopen Powershell to reload the environmental variables so that the paths work.  Once you do that you will want to create a local folder to store everything in.  In my case, I use C:\GitHub.  Navigate to that folder in the command line and type the following command.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">git</span><span class="w"> </span><span class="nx">init</span></code></pre></figure>
+
+<p>This will initialize git to the folder.  I then used this command to clone my repo to the local folder.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">git</span><span class="w"> </span><span class="nx">clone</span><span class="w"> </span><span class="nx">https://github.com/Anitalex/Azure.git</span></code></pre></figure>
+
+<p>This will then copy my Azure repo to the local GitHub folder.  I now have a path of C:\GitHub\Azure.  I now copied my previous working folder of CarlosTraining into the Templates folder that I already had inside of C:\GitHub\Azure.  I now need to commit all of these changes.  I start by adding the files with this command.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">git</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="o">.</span></code></pre></figure>
+
+<p>I then commit the changes using this command</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">git</span><span class="w"> </span><span class="nx">commit</span><span class="w"> </span><span class="nt">-m</span><span class="w"> </span><span class="s2">"Initial Commit"</span></code></pre></figure>
+
+<p>I now have my changes ready to be pushed to GitHub.  I now use the following command to push them to GitHub.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">git</span><span class="w"> </span><span class="nx">push</span><span class="w"> </span><span class="nx">origin</span><span class="w"> </span><span class="nx">master</span></code></pre></figure>
+
+<p>Now the files in my GitHub account are the same as my working directory at C:\GitHub\Azure.  So now I will have to figure out how to use this to deploy the VM in Azure.</p>
+
+<p>I know that before I used the -TemplateFile and -TemplateParameterFile parameters with the New-AZResourceGroupDeployment cmdlet to deploy the files but they are only used for local files.  The new parameters for running from a URL are -TemplateURI and -TemplateParameterURI.  I changed them to use the URLs paths of the file in my GitHub repo as shown below.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">New-AZResourceGroupDeployment</span><span class="w"> </span><span class="nt">-resourcegroupname</span><span class="w"> </span><span class="nx">CarlosTraining</span><span class="w"> </span><span class="nt">-TemplateURI</span><span class="w"> </span><span class="s2">"https://github.com/Anitalex/Azure/blob/master/Templates/CarlosTraining/ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538/template.json"</span><span class="w"> </span><span class="nt">-TemplateParameterURI</span><span class="w"> </span><span class="s2">"https://github.com/Anitalex/Azure/blob/master/Templates/CarlosTraining/ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538/parameters.json"</span></code></pre></figure>
+
+<p>When I ran this command, I immediately get the error below.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">New-AzResourceGroupDeployment:</span><span class="w"> </span><span class="nx">12:22:32</span><span class="w"> </span><span class="nx">PM</span><span class="w"> </span><span class="nf">-</span><span class="w"> </span><span class="nx">Error:</span><span class="w"> </span><span class="nx">Code</span><span class="o">=</span><span class="nf">InvalidTemplate</span><span class="p">;</span><span class="w"> </span><span class="nf">Message</span><span class="o">=</span><span class="nf">Deployment</span><span class="w"> </span><span class="nx">template</span><span class="w"> </span><span class="nx">parse</span><span class="w"> </span><span class="nx">failed:</span><span class="w"> </span><span class="s1">'Unexpected character encountered while parsing value: &lt;. Path '', line 0, position 0.'</span><span class="o">.</span><span class="w">
+
+</span><span class="nf">New-AzResourceGroupDeployment:</span><span class="w"> </span><span class="nx">The</span><span class="w"> </span><span class="nx">deployment</span><span class="w"> </span><span class="nx">validation</span><span class="w"> </span><span class="nx">failed</span></code></pre></figure>
+
+<p>I did a little research and found that this error happens because GitHub adds some information to the data that is sent and causes it to error out.  In order to get this to work you need to go to the file in GitHub and then click the Raw button.  You can then save the URL from there.</p>
+
+<p>I have now replaced the command with the raw links to the files as shown below.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">New-AZResourceGroupDeployment</span><span class="w"> </span><span class="nt">-resourcegroupname</span><span class="w"> </span><span class="nx">carlostraining</span><span class="w">  </span><span class="nt">-templateuri</span><span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/Anitalex/Azure/master/Templates/CarlosTraining/ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538/template.json"</span><span class="w">   </span><span class="nt">-templateparameteruri</span><span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/Anitalex/Azure/master/Templates/CarlosTraining/ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538/parameters.json"</span></code></pre></figure>
+
+<p>When I run this command it now works like a charm! Now you can edit the files on your local machine and commit them to GitHub.  Then you can run the Powershell command to deploy the templates from GitHub.  I personally us Visual Studio Code as my IDE and I was able to do all of this from there.  Now I can make changes to my parameters.json and hit CTRL+S to save it.  Then in VS Code, I type following command and my new changes get deployed to Azure.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">git</span><span class="w"> </span><span class="nx">add</span><span class="w"> </span><span class="o">.</span><span class="w">
+</span><span class="nf">git</span><span class="w"> </span><span class="nx">commit</span><span class="w"> </span><span class="nt">-m</span><span class="w"> </span><span class="s2">"Some message about changes"</span><span class="w">
+</span><span class="nf">git</span><span class="w"> </span><span class="nx">push</span><span class="w"> </span><span class="nx">origin</span><span class="w"> </span><span class="nx">master</span><span class="w">
+</span><span class="nf">New-AZResourceGroupDeployment</span><span class="w"> </span><span class="nt">-resourcegroupname</span><span class="w"> </span><span class="nx">carlostraining</span><span class="w">  </span><span class="nt">-templateuri</span><span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/Anitalex/Azure/master/Templates/CarlosTraining/ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538/template.json"</span><span class="w">   </span><span class="nt">-templateparameteruri</span><span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/Anitalex/Azure/master/Templates/CarlosTraining/ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538/parameters.json"</span></code></pre></figure>
+
+<p>Are you wondering the same thing that I am wondering?  That’s right!  What if I don’t have to do this last step?  What if all I had to do is push my changes to GitHub and then everything happens from there?  I think I see a Part 3 coming on!</p>
+
+<p>For now though, have a wonderful day!</p>
+
+<p>Carlos</p>
+:ET

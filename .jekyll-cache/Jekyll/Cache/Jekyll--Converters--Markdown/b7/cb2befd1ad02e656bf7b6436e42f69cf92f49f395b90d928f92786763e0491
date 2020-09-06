@@ -1,0 +1,53 @@
+I"�<p>Ok so here we go!  I am up late once again trying to get our Azure environment up to speed and I was looking into setting up Azure Bastion.  In case you are unaware of what Azure Bastion is, it is an Azure service that allows you to connect to your virtual machines in Azure without having to open up ports on your firewalls for RDP or SSH.  There are nefarious characters out there everywhere who are constantly scanning every IP looking for someone who has left these ports open so don’t use them.</p>
+
+<p>Azure Bastion is free for the first 5GB per month and in our case, it is not likely that we will use all of that.  If you would like more information on pricing, you can find it here on the pricing page.</p>
+
+<p>Now to begin, the first thing that you will want to do is go to your virtual network and create a new subnet.  You do not have to do anything pretty but you do have to name the subnet AzureBastionSubnet.  You can select any IP range in your virtual network’s address space as long as it is at least a /27.  If your address space is 10.1.0.0/16 then you can use something like 10.1.254.0/24 as long as that does not overlap with another subnet.</p>
+
+<p>Once the AzureBastionSubnet has been created in your virtual network then you will want to search for Bastions and select create new.</p>
+
+<p>Filling out the form is quite straight forward with only a few things to input.</p>
+<ul>
+  <li>Fill out your Resource Group</li>
+  <li>Create a name for it</li>
+  <li>Select a region</li>
+  <li>Select your virtual network</li>
+  <li>Select your AzureBastionSubnet</li>
+  <li>Provide a name for your public IP</li>
+</ul>
+
+<p><img src="/flexible-jekyll/assets/img/CreateBastion1.jpg" /></p>
+
+<p>You can then go on to Tags or go ahead and hit Review + Create</p>
+
+<p>After the installation of Bastion has completed you will then want to create a Network Security Group to lock down the service.  Go to the hamburger in the top left and select Create a Resource.</p>
+
+<p>In the Search the Marketplace field type in Network Security Group and then hit Create on the next window.</p>
+
+<p>Fill in the areas with your information</p>
+<ul>
+  <li>Select your Resource Group</li>
+  <li>Provide a name for your NSG</li>
+  <li>Select your region</li>
+</ul>
+
+<p>Then hit Review + Create</p>
+
+<p><img src="/flexible-jekyll/assets/img/CreateBastion2.jpg" /></p>
+
+<p>Once the NSG has been created we will add two inbound rules and two outbound rules.  Go to the resource and on the left select Inbound Security Rules.  Then add these two inbound rules</p>
+
+<p><img src="/flexible-jekyll/assets/img/CreateBastion3.jpg" /></p>
+
+<p>Then go to the left again and select Outbound Security Rules and add these two rules.</p>
+
+<p><img src="/flexible-jekyll/assets/img/CreateBastion4.jpg" /></p>
+
+<p>Now you click on Subnets on the left and click Associate to add the AzureBastionSubnet to the NSG.</p>
+
+<p>Now when you go back to your virtual machine and click Connect you will want to select Bastion.  Type in your username and password to the virtual machine and you should connect right up.</p>
+
+<p><img src="/flexible-jekyll/assets/img/CreateBastion5.jpg" /></p>
+
+<p>I hope that this helps!  Add a comment if it helps you or if you have difficulties getting it to work.</p>
+:ET

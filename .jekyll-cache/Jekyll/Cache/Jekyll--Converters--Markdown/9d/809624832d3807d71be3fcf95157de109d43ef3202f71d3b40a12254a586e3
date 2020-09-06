@@ -1,0 +1,73 @@
+I"�'<p>So its been a little while!  Life gets busy some times and you just have to deal with that.  Yesterday I was able to get back into it and decided that I would just build 100 VMs in every way possible.   I started with the portal.  I created a VM but going to the marketplace and selecting the Server 2019 template and then selected the defaults on as much stuff as I could.  Not very exciting eh?</p>
+
+<p>I then decided to take a look at the deployment and see more information.  You can do this by going to the Resource Group and then selecting Deployments.  Find your deployment and click on it.  Now you will find 4 separate areas and the one that we are interested in is the Templates.  Although there is a lot of good information in the Overview, Input, and Output areas, we are interested in automation here so off to Templates we go.</p>
+
+<p>I started by looking at the Parameters tab.  I payed attention to the syntax and trying to understand why it is doing what it is doing.  The first thing that I noticed is the first 2 lines.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="s2">"</span><span class="nv">$schema</span><span class="s2">"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#"</span><span class="p">,</span><span class="w">
+ </span><span class="s2">"contentVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0.0"</span></code></pre></figure>
+
+<p>These are required.  I am not sure yet how to know when to change the schema but for now I will let that go since it obviously hasn’t changed in 5 years.  Maybe this will become important to me today but for now we just need to know that it is needed.  The contentVersion is an area that allows me to keep a versioning control system.  More on that to come.</p>
+
+<p>I decided that I would save these templates to my machine and use them to redeploy.  I saved them locally and then deleted everything in the target resource group.  If I did not remove everything first then the deployment would just validate that it is correct and not deploy anything.  The files downloaded as a ZIP file that contains a template.json and a parameters.json.  I then set out to figure out how I deploy these.  I started in the portal by selecting Template Deployment from the Marketplace.  The options that this gave me didn’t seem like this was the place to start so I pulled out the good ole Powershell.</p>
+
+<p>The first thing that you will have to do is connect to Azure.  Run this command from the Powershell window.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">connect-azaccount</span></code></pre></figure>
+
+<p>You will be directed to a login window or in my case I was directed to a site since I am using Windows Terminal.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">WARNING:</span><span class="w"> </span><span class="nx">To</span><span class="w"> </span><span class="nx">sign</span><span class="w"> </span><span class="nx">in</span><span class="p">,</span><span class="w"> </span><span class="nx">use</span><span class="w"> </span><span class="nx">a</span><span class="w"> </span><span class="nx">web</span><span class="w"> </span><span class="nx">browser</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">open</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">page</span><span class="w"> </span><span class="nx">https://microsoft.com/devicelogin</span><span class="w"> </span><span class="nx">and</span><span class="w"> </span><span class="nx">enter</span><span class="w"> </span><span class="nx">the</span><span class="w"> </span><span class="nx">code</span><span class="w"> </span><span class="nx">R5DF9PAYX</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">authenticate.</span></code></pre></figure>
+
+<p>Once you complete the login phase you can test by checking to see if you see your Resource Groups.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">Get-AZResourceGroup</span></code></pre></figure>
+
+<p>This is actually an important step.  If you are like me and work for a Managed Service Provider (MSP) then you may be connected to a lot of different tenants.   I had no Resource Groups at all and had to then select a subscription in order to get to the right area.  I ran the following command.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">select-azsubscription</span><span class="w"> </span><span class="nt">-subscriptionName</span><span class="w"> </span><span class="nx">Pay-As-You-Go</span></code></pre></figure>
+
+<p>Once I ran this command I could then look for Resource Groups again and I found my CarlosTraining resource group.</p>
+
+<p>I am now ready to attempt to deploy everything again by using the template.  I did some research and found the following command.  Deploying ARM templates from Powershell requires the New-AZResourceGroupDeployment cmdlet and at least 3 parameters.   You are required to provided the target resource group, the source template.json and the source parameters.json files.  I am using the TemplateFile and TemplateParameterFile since my files are local on my machine.  More on this in part 2 of this post!</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">New-AZResourceGroupDeployment</span><span class="w"> </span><span class="nt">-resourcegroupname</span><span class="w"> </span><span class="s2">"CarlosTraining"</span><span class="w">
+ </span><span class="nt">-TemplateParameterFile</span><span class="w"> </span><span class="nf">C:\CarlosTraining\ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538\parameters.json</span><span class="w"> </span><span class="nt">-TemplateFile</span><span class="w"> </span><span class="nx">C:\CarlosTraining\ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538\template.json</span></code></pre></figure>
+
+<p>So when I ran this you would expect that it went flawlessly.  Nope, think again!  Apparently, we need to still supply the admin password!  So as a good little engineer, I went into the parameters.json file and put the admin password.  I then ran the command again and ha ha it worked!  As soon as it was all completed, I deleted everything so that I could go again.  Putting the password in the parameters file is an absolutely HORRIBLE idea so I thought,</p>
+
+<p>“how do you use a Key Vault for this?”</p>
+
+<p>I went to the portal and searched Key Vault.  I then created a new Key Vault called CarlosTrainingKeyVault in the same region as my VM which is EastUS.  I then added a secret by going into the key vault and selecting Secrets and then selecting Generate\Import.  I called it “admin” and supplied a password.</p>
+
+<p>I now have to get the parameters.json file to reference that secret in the key vault.  In the parameters.json file I found the “adminPassword” section at the bottom.  I then changed it to read as below.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="s2">"adminPassword"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+ </span><span class="s2">"reference"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+ </span><span class="s2">"keyVault"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+ </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/subscriptions/&lt;subscriptionID&gt;/resourceGroups/CarlosTraining/providers/Microsoft.KeyVault/vaults/CarlosTrainingKeyVault"</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+ </span><span class="s2">"secretName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"admin"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
+
+<p>You will need to change the <subscriptionID> to your subscription ID.  Better yet, if you go to the key vault, you can then go to Properties and the Resource ID can be copied from right there that will have your subscription ID already in it.  You're welcome!  :D</subscriptionID></p>
+
+<p>Now save that file and re-run the previous command to deploy the template.</p>
+
+<figure class="highlight"><pre><code class="language-powershell" data-lang="powershell"><span class="nf">New-AZResourceGroupDeployment</span><span class="w"> </span><span class="nt">-resourcegroupname</span><span class="w"> </span><span class="s2">"CarlosTraining"</span><span class="w">
+ </span><span class="nt">-TemplateParameterFile</span><span class="w"> </span><span class="nf">C:\CarlosTraining\ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538\parameters.json</span><span class="w"> </span><span class="nt">-TemplateFile</span><span class="w"> </span><span class="nx">C:\CarlosTraining\ExportedTemplate-CreateVm-MicrosoftWindowsServer.WindowsServer-201-20200627202538\template.json</span></code></pre></figure>
+
+<p>If you are like me then you have successfully deployed the same environment twice!  Once via the portal and once via an ARM template!  You also have now learned how to get an ARM template to reference a secret inside of a Key Vault!</p>
+
+<p>This is a lot for today but I did not stop there!  The next obvious place for me to go was to think,</p>
+
+<p>How would I have done this from a public source like GitHub?</p>
+
+<p>And this is where I leave you for now!  I will go over that question in the next post, Part 2!</p>
+
+<p>See you then!</p>
+
+<p>Carlos</p>
+
+:ET
