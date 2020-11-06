@@ -13,7 +13,7 @@ I now have been working with ConnectWise for over 4 years and during this time I
 
 The first thing that you will need to is to go to ConnectWise Developer at https://developer.connectwise.com/ and register.  You will then need to create a Partner Client ID and ensure you use the appropriate Integration Type for your server.
 
-![ConnectWisePartnerID](/assets/ConnectWisePartnerID.PNG)
+![ConnectWisePartnerID](/assets/img/ConnectWisePartnerID.PNG)
 
 Once your request is approved you will get an ID similar to xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx an you will need this shortly.  The next thing that you will need to do is to go into your ConnectWise and create an API key.  To do this you will need to be an admin or have someone who has the permissions to help you.  On the bottom left of ConnectWise is a System icon.  When you hover over that you will get a pane open up and you will want to select Members.  Next, you will want to go to the API Keys tab and create an API key and ensure that you record the private key as you will never see it again.
 
