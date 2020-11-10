@@ -3,7 +3,7 @@ layout: post
 title: Powershell and the ConnectWise API
 date: 2020-11-05 00:00:00 +0300
 description: Using the ConnectWise API with Powershell to do thing such as opening tickets and adding time.
-img: workflow.jpg # Add image post (optional)
+img: laptopwithcode.jpg # Add image post (optional)
 fig-caption: # Add figcaption (optional)
 comments: true
 tags: [Azure, DevOps, ConnectWise, Powershell] # add tag
