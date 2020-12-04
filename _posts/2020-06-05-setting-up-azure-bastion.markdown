@@ -9,7 +9,7 @@ comments: true
 tags: [Azure, Powershell, ARM Template] # add tag
 ---
 
-Ok so here we go!  I am up late once again trying to get our Azure environment up to speed and I was looking into setting up Azure Bastion.  In case you are unaware of what Azure Bastion is, it is an Azure service that allows you to connect to your virtual machines in Azure without having to open up ports on your firewalls for RDP or SSH.  There are nefarious characters out there everywhere who are constantly scanning every IP looking for someone who has left these ports open so don't use them.  
+Ok so here we go!  Today we are talking about setting up Azure Bastion.  In case you are unaware of what Azure Bastion is, it is an Azure service that allows you to connect to your virtual machines in Azure without having to open up ports on your firewalls for RDP or SSH.  There are nefarious characters out there everywhere who are constantly scanning every IP looking for someone who has left these ports open so don't use them.  If you think that you will be smart and just use a different port and then use your Network Security Group to map your port to 3389 then please think again.  Scanners such as NMAP can not only find every port open but you can easily test each port with each protocol to see if the port accepts that protocol.  So no bueno!
 
 Azure Bastion is free for the first 5GB per month and in our case, it is not likely that we will use all of that.  If you would like more information on pricing, you can find it here on the pricing page.
 
