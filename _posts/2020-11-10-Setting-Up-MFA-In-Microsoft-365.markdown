@@ -19,19 +19,19 @@ I would like to show you how to protect your email in Microsoft 365 with multi-f
 
 Go to [Office Portal](https://portal.office.com) and log in.  If this does not take you to the Admin section, then go to the 9 dots in the top left and click it to find Admin.  If you do not have this then you do not have the permissions and will need to find out who does.  
 
-![M365AdminIcon](/assets/img/M365AdminIcon.PNG)
+![M365AdminIcon](/assets/img/M365AdminIcon.jpg)
 
 This will take you to the Admin portal of Microsoft 365.  From here you will want to click on Users on the left pane and then Active Users.
 
-![M365ActiveUsers](/assets/img/M365ActiveUsers.PNG)
+![M365ActiveUsers](/assets/img/M365ActiveUsers.jpg)
 
 You should now see a list of users that you have in your portal.  There is a menu bar that goes across the top just above the list of users.  Click on Multi-factor Authentication.
 
-![M365Multi-factor](/assets/img/M365Multi-factor.PNG)
+![M365Multi-factor](/assets/img/M365Multi-factor.jpg)
 
 This should have taken you to a new page that provides you a list of all your users again but looks a little different than before.  It should now have a 3rd column that shows the status of multi-factor authentication for each user in your portal.  If you click on one of the users, it will then provide you another pane to the right that has some Quick Steps.
 
-![M365MFAQuickSteps](/assets/img/M365MFAQuickSteps.PNG)
+![M365MFAQuickSteps](/assets/img/M365MFAQuickSteps.jpg)
 
 Click on Enable to turn on multi-factor authentication for that user.  When you do this, you will notice that it changes to Enabled.  You will now need for that user to go to a browser and type in www.office.com.  When they go to that site, they will want to log in with their credentials for the account you just enabled MFA on.  Once they put in the correct password it will walk them through adding their cell phone to their account and enabling MFA using either a text message or an application installed on the phone such as Microsoft Authenticator.  
 
