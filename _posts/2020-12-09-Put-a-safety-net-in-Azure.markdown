@@ -3,7 +3,7 @@ layout: post
 title: Put a Safety Net in Azure
 date: 2020-12-09 00:00:00 +0300
 description: Here is a way that you can put a safety net so that you do not run up costs in your test subscription
-img: workflow.jpg # Add image post (optional)
+img: Cleanup.jpg # Add image post (optional)
 fig-caption: # Add figcaption (optional)
 comments: true
 tags: [Microsoft, Azure, Functions, Powershell] # add tag
