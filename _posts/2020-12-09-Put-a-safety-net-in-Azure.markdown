@@ -91,7 +91,7 @@ Now click Run in the blade that pops up to the right.
 
 ![AzureFunctionAppRun](/assets/img/AzureFunctionAppRun.jpg)
 
-If you have set it up correctly you should see the test Resource Groups disappear.  My suggestion is to then test the trigger.   Build out a new Resource Group and place a virtual machine with vnet inside.  Come back the next day to validate that it is gone.  If it is then you now know that every night at midnight your subscription will be cleaned.
+If you have set it up correctly you should see the test Resource Groups disappear.  This may take a few minutes as it takes time to remove a Resource Group.  My suggestion is to then test the trigger.   Build out a new Resource Group and place a virtual machine with a virtual network inside.  Come back the next day to validate that it is gone.  If it is then you now know that every night at midnight your subscription will be cleaned.
 
 Thanks
 Carlos
