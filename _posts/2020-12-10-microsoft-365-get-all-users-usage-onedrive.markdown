@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Microsoft 365 Get the usage of OneDrive for all users
-date: 2020-11-10 00:00:00 +0300
+date: 2020-12-10 00:00:00 +0300
 description: How to use Powershell to get the useage of OneDrive for all users.
 img: sharepoint.jpg # Add image post (optional)
 fig-caption: # Add figcaption (optional)
